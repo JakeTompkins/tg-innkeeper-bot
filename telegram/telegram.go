@@ -9,19 +9,24 @@ import (
 	"os"
 )
 
-var API_KEY = os.Getenv("API_KEY")
+var apiKey = os.Getenv("API_KEY")
+var botUrl = os.Getenv("BOT_URL")
+var listenPort = os.Getenv("PORT")
 
 type ITelegramBot interface {
 	Send(request telegramBotRequest) telegramBotResponse
 }
 type telegramBot struct {
 	root_url string
+
+	updateParser updateParser
 }
 
 func NewTelegramBot() *telegramBot {
 	var telegramBot telegramBot
 
-	telegramBot.root_url = fmt.Sprintf("https://api.telegram.org/bot%s/", API_KEY)
+	telegramBot.root_url = fmt.Sprintf("https://api.telegram.org/bot%s/", apiKey)
+	telegramBot.updateParser = newUpdateParser()
 
 	return &telegramBot
 }
@@ -53,11 +58,11 @@ func newSuccessResponse(data string) telegramBotResponse {
 }
 
 type telegramBotRequest struct {
-	Command string   `json:"command,omitempty"`
-	Payload struct{} `json:"payload,omitempty"`
+	Command string      `json:"command,omitempty"`
+	Payload interface{} `json:"payload,omitempty"`
 }
 
-func newRequest(command string, payload struct{}) telegramBotRequest {
+func newRequest(command string, payload interface{}) telegramBotRequest {
 	var request telegramBotRequest
 
 	request.Command = command
@@ -239,6 +244,10 @@ type update struct {
 	PollAnser         *PollAnswer         `json:"poll_anser,omitempty"`
 }
 
+type setWebhookPayload struct {
+	Url string
+}
+
 func (t *telegramBot) Send(request telegramBotRequest) telegramBotResponse {
 	url := t.root_url + request.Command
 
@@ -257,4 +266,37 @@ func (t *telegramBot) Send(request telegramBotRequest) telegramBotResponse {
 	resBody, err := io.ReadAll(res.Body)
 
 	return newSuccessResponse(string(resBody))
+}
+
+func (t *telegramBot) RegisterWebhook() telegramBotResponse {
+	request := newRequest("setWebhook", setWebhookPayload{
+		Url: botUrl + "/webhook",
+	})
+
+	response := t.Send(request)
+
+	return response
+}
+
+func HandleUpdate(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+
+	if err != nil {
+		return
+	}
+
+	var update update
+
+	err = json.Unmarshal(body, update)
+
+	if err != nil {
+		return
+	}
+
+}
+
+func (t *telegramBot) Listen() error {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/webhook", HandleUpdate)
 }
