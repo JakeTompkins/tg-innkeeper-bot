@@ -3,6 +3,8 @@ package telegram
 import (
 	"regexp"
 	"strings"
+
+	s "tg-group-scheduler/services"
 )
 
 var VALID_COMMANDS = []string{"/roll"}
@@ -15,27 +17,22 @@ func newUpdateParser() *updateParser {
 	return &parser
 }
 
-func (p *updateParser) Parse(update update) {
+func (p *updateParser) Parse(update update) s.ServiceCommand {
 	message := update.Message
 	text := message.Text
-	re := regexp.MustCompile(`(?P<command>^\\\w+)(?P<args>[\w\d\s]+)?$`)
+	re := regexp.MustCompile(`(?P<command>^/\w+)(?P<args>[\w\d\s]+)?$`)
 
-	var command string
-	var args []string
+	var serviceCommand s.ServiceCommand
 
 	match := re.FindStringSubmatch(text)
 
 	for i, name := range re.SubexpNames() {
-			if name == "command" {
-				command = match[i]
-			} else if name == "args" {
-				args = strings.Split(strings.Trim(match[i], " "), " ")
-			}
+		if name == "command" {
+			serviceCommand.Command = match[i]
+		} else if name == "args" {
+			serviceCommand.Args = strings.Split(strings.Trim(match[i], " "), " ")
+		}
 	}
 
-
-  case "\\roll":
-	switch command {
-	
-  }
+	return serviceCommand
 }

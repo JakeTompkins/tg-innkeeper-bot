@@ -19,7 +19,7 @@ type ITelegramBot interface {
 type telegramBot struct {
 	root_url string
 
-	updateParser updateParser
+	updateParser *updateParser
 }
 
 func NewTelegramBot() *telegramBot {
@@ -285,7 +285,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var update update
+	var update *update
 
 	err = json.Unmarshal(body, update)
 
@@ -299,4 +299,6 @@ func (t *telegramBot) Listen() error {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/webhook", HandleUpdate)
+
+	return nil
 }
