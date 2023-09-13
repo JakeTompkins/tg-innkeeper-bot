@@ -302,7 +302,11 @@ func (t *telegramBot) Listen() error {
 		fmt.Println("Pong!")
 	})
 
-	t.RegisterWebhook()
+	response := t.RegisterWebhook()
+
+	if response.Error != nil {
+		fmt.Println(response.Error)
+	}
 
 	return nil
 }
