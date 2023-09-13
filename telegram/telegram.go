@@ -297,7 +297,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	fmt.Println(update.Message.Text)
+	fmt.Println(update)
 }
 
 func (t *telegramBot) Listen() error {
