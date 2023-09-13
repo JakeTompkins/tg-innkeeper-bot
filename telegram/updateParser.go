@@ -21,9 +21,13 @@ func parseUpdateToCommand(update update) s.ServiceCommand {
 
 	for i, name := range re.SubexpNames() {
 		if name == "command" {
-			serviceCommand.Command = match[i]
+			if i > len(match) {
+				serviceCommand.Command = match[i]
+			}
 		} else if name == "args" {
-			serviceCommand.Args = strings.Split(strings.Trim(match[i], " "), " ")
+			if i > len(match) {
+				serviceCommand.Args = strings.Split(strings.Trim(match[i], " "), " ")
+			}
 		}
 	}
 
