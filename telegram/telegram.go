@@ -248,6 +248,11 @@ type setWebhookPayload struct {
 	Url string
 }
 
+func getPortString() string {
+	portNumber := os.Getenv("PORT")
+	return fmt.Sprintf(":%s", portNumber)
+}
+
 func (t *telegramBot) Send(request telegramBotRequest) telegramBotResponse {
 	url := t.root_url + request.Command
 
@@ -295,11 +300,6 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getPortString() string {
-	portNumber := os.Getenv("PORT")
-	return fmt.Sprintf(":%s", portNumber)
-}
-
 func (t *telegramBot) Listen() error {
 	mux := http.NewServeMux()
 	// mux.HandleFunc("/webhook", HandleUpdate)
@@ -308,6 +308,8 @@ func (t *telegramBot) Listen() error {
 	})
 
 	response := t.RegisterWebhook()
+
+	fmt.Println(response.Data)
 
 	if response.Error != nil {
 		fmt.Println(response.Error)
