@@ -298,6 +298,7 @@ func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	if update.Message == nil {
 		fmt.Println("No message in update")
+		return
 	}
 
 	serviceCommand := parseUpdateToCommand(update)
