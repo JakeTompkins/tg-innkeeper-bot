@@ -13,6 +13,14 @@ type D20Service struct {
 	service Service
 }
 
+func max(a int, b int) int {
+	if a > b {
+		return a
+	} else {
+		return b
+	}
+}
+
 func NewD20Service() *D20Service {
 	return &D20Service{
 		service: Service{
