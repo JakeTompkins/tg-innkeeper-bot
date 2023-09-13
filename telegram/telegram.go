@@ -284,14 +284,15 @@ func (t *telegramBot) RegisterWebhook() telegramBotResponse {
 
 func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
+	defer r.Body.Close()
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	var update *update
+	var update update
 
-	err = json.Unmarshal(body, update)
+	err = json.Unmarshal(body, &update)
 
 	if err != nil {
 		fmt.Println(err)
