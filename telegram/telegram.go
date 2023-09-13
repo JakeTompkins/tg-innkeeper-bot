@@ -286,7 +286,7 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 
 	if err != nil {
-		return
+		fmt.Println(err)
 	}
 
 	var update *update
@@ -294,11 +294,10 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, update)
 
 	if err != nil {
-		return
+		fmt.Println(err)
 	}
 
 	fmt.Println(update.Message.Text)
-
 }
 
 func (t *telegramBot) Listen() error {
