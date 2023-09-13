@@ -297,8 +297,12 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 func (t *telegramBot) Listen() error {
 	mux := http.NewServeMux()
+	// mux.HandleFunc("/webhook", HandleUpdate)
+	mux.HandleFunc("/webhook", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Pong!")
+	})
 
-	mux.HandleFunc("/webhook", HandleUpdate)
+	t.RegisterWebhook()
 
 	return nil
 }
