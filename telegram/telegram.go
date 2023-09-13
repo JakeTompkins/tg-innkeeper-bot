@@ -301,20 +301,13 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 func (t *telegramBot) Listen() error {
 	mux := http.NewServeMux()
-	// mux.HandleFunc("/webhook", HandleUpdate)
-	mux.HandleFunc("/webhook", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Pong!")
-	})
+	mux.HandleFunc("/webhook", HandleUpdate)
 
 	response := t.RegisterWebhook()
-
-	fmt.Println(response.Data)
 
 	if response.Error != nil {
 		fmt.Println(response.Error)
 	}
-
-	fmt.Println("Listening for messages!")
 
 	err := http.ListenAndServe(getPortString(), mux)
 
