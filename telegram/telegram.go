@@ -295,6 +295,11 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getPortString() string {
+	portNumber := os.Getenv("PORT")
+	return fmt.Sprintf(":%s", portNumber)
+}
+
 func (t *telegramBot) Listen() error {
 	mux := http.NewServeMux()
 	// mux.HandleFunc("/webhook", HandleUpdate)
@@ -306,6 +311,14 @@ func (t *telegramBot) Listen() error {
 
 	if response.Error != nil {
 		fmt.Println(response.Error)
+	}
+
+	fmt.Println("Listening for messages!")
+
+	err := http.ListenAndServe(getPortString(), mux)
+
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	return nil
