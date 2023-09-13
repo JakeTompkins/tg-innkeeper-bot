@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"tg-group-scheduler/services"
 )
 
 var apiKey = os.Getenv("API_KEY")
@@ -18,15 +19,12 @@ type ITelegramBot interface {
 }
 type telegramBot struct {
 	root_url string
-
-	updateParser *updateParser
 }
 
 func NewTelegramBot() *telegramBot {
 	var telegramBot telegramBot
 
 	telegramBot.root_url = fmt.Sprintf("https://api.telegram.org/bot%s/", apiKey)
-	telegramBot.updateParser = newUpdateParser()
 
 	return &telegramBot
 }
@@ -282,7 +280,7 @@ func (t *telegramBot) RegisterWebhook() telegramBotResponse {
 	return response
 }
 
-func HandleUpdate(w http.ResponseWriter, r *http.Request) {
+func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 
@@ -298,12 +296,20 @@ func HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	fmt.Println(update.Message.Text)
+	serviceCommand := parseUpdateToCommand(update)
+
+	result, err := services.ExecuteCommand(&serviceCommand)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(result.Data)
 }
 
 func (t *telegramBot) Listen() error {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/webhook", HandleUpdate)
+	mux.HandleFunc("/webhook", t.HandleUpdate)
 
 	response := t.RegisterWebhook()
 

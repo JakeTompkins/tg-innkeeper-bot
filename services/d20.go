@@ -1,4 +1,4 @@
-package d20
+package services
 
 import (
 	"errors"
@@ -7,23 +7,26 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	s "tg-group-scheduler/services"
 )
 
 type D20Service struct {
-	service s.Service
+	service Service
 }
 
 func NewD20Service() *D20Service {
 	return &D20Service{
-		service: s.Service{
+		service: Service{
 			Name:          "D20 Roller",
 			ValidCommands: []string{"/roll"},
 		},
 	}
 }
 
-func (d *D20Service) Execute(command *s.ServiceCommand) (*s.ServiceResult, error) {
+func (d *D20Service) CommandIsValid(command *ServiceCommand) bool {
+	return d.service.CommandIsValid(command)
+}
+
+func (d *D20Service) Execute(command *ServiceCommand) (*ServiceResult, error) {
 	var result string
 
 	switch command.Command {
@@ -35,8 +38,8 @@ func (d *D20Service) Execute(command *s.ServiceCommand) (*s.ServiceResult, error
 		result = fmt.Sprintf("%d", r)
 	}
 
-	return &s.ServiceResult{
-		Code: s.SUCCESS,
+	return &ServiceResult{
+		Code: SUCCESS,
 		Data: result,
 	}, nil
 }

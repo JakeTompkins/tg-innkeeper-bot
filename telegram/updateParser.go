@@ -7,17 +7,10 @@ import (
 	s "tg-group-scheduler/services"
 )
 
+// TODO: This logic should be moved to a struct that has access to alls ervices in order to construct the VALID_COMMANDS var
 var VALID_COMMANDS = []string{"/roll"}
 
-type updateParser struct{}
-
-func newUpdateParser() *updateParser {
-	var parser updateParser
-
-	return &parser
-}
-
-func (p *updateParser) Parse(update update) s.ServiceCommand {
+func parseUpdateToCommand(update update) s.ServiceCommand {
 	message := update.Message
 	text := message.Text
 	re := regexp.MustCompile(`(?P<command>^/\w+)(?P<args>[\w\d\s]+)?$`)
