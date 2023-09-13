@@ -43,7 +43,7 @@ func (d *D20Service) Execute(command *ServiceCommand) (*ServiceResult, error) {
 		if err != nil {
 			return nil, err
 		}
-		result = fmt.Sprintf("%d", r)
+		result = r
 	}
 
 	return &ServiceResult{
@@ -84,21 +84,30 @@ func parseFlatAdjustmentString(s string) int {
 	return adjustment * multiplier
 }
 
-func (d *diceRoll) Roll() int {
+func (d *diceRoll) Roll() string {
 	n := max(d.NumberOfDice, 1)
 	s := d.Sides
 	f := d.FlatAdjustment
 
-	var result int
+	var result string
+	var total int
 	for i := 0; i < n; i++ {
-		result += rand.Intn(s) + 1 + f
+		rollValue := rand.Intn(s) + 1
+		adjustment := f
+		total += rollValue + adjustment
+
+		result += fmt.Sprintf("1d%d + %d", rollValue, adjustment)
+
+		if n-i == 1 {
+			result += fmt.Sprintf(" = %d", total)
+		}
 	}
 
 	return result
 }
 
-func rollDice(diceStrings []string) (int, error) {
-	var result int
+func rollDice(diceStrings []string) (string, error) {
+	var result string
 	diceStringRegex := regexp.MustCompile(`^(?P<NumberOfDice>\d+)?d(?P<Sides>\d+)\s?(?P<FlatAdjustment>[+-]\s?\d+)?$`)
 
 	for _, diceString := range diceStrings {
@@ -119,10 +128,10 @@ func rollDice(diceStrings []string) (int, error) {
 		}
 
 		if newRoll.Sides <= 0 {
-			return 0, errors.New("Invalid dice notation")
+			return "0", errors.New("Invalid dice notation")
 		}
 
-		result += newRoll.Roll()
+		result += newRoll.Roll() + "\n"
 	}
 
 	return result, nil
