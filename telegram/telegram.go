@@ -245,12 +245,11 @@ type update struct {
 }
 
 type setWebhookPayload struct {
-	Url string
+	Url string `json:"url,omitempty"`
 }
 
 func getPortString() string {
-	portNumber := os.Getenv("PORT")
-	return fmt.Sprintf(":%s", portNumber)
+	return fmt.Sprintf(":%s", listenPort)
 }
 
 func (t *telegramBot) Send(request telegramBotRequest) telegramBotResponse {
