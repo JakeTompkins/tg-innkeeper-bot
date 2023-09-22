@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"tg-group-scheduler/services"
 )
 
 var apiKey = os.Getenv("API_KEY")
@@ -301,15 +300,7 @@ func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	serviceCommand := parseUpdateToCommand(update)
-
-	result, err := services.ExecuteCommand(&serviceCommand)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(result.Data)
+	// TODO: Implement the new command module
 }
 
 func (t *telegramBot) Listen() error {
