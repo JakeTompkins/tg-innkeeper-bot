@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"tg-group-scheduler/commands"
+	"tg-group-scheduler/tokenizer"
 )
 
 var apiKey = os.Getenv("API_KEY")
@@ -279,6 +281,30 @@ func (t *telegramBot) RegisterWebhook() telegramBotResponse {
 	return response
 }
 
+func (t *telegramBot) ProcessText(text string) string {
+	tok := tokenizer.NewLexer(text)
+	token := tok.NextToken()
+	var res string
+	var err error
+
+	for token != nil {
+		switch token.Type {
+		case tokenizer.IGNORED_WORD:
+			continue
+		case tokenizer.IMPORTANT_WORD:
+			fmt.Println("Found an important word!") // NOTE: Not currently in use
+		case tokenizer.COMMAND:
+			res, err = commands.ExecuteRollD20(token) // TODO: Need a better handler for commands once more are implemented
+		}
+	}
+
+	if err != nil {
+		fmt.Println(err) // TODO: Better error handling
+	}
+
+	return res
+}
+
 func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
@@ -300,7 +326,9 @@ func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: Implement the new command module
+	resText := t.ProcessText(update.Message.Text)
+
+	fmt.Println(resText)
 }
 
 func (t *telegramBot) Listen() error {

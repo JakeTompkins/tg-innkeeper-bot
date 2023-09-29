@@ -91,7 +91,7 @@ func newToken(tokenType TokenType, characters ...byte) Token {
 	return Token{Type: tokenType, Value: value}
 }
 
-func (l *Lexer) NextToken() Token {
+func (l *Lexer) NextToken() *Token {
 	var token Token
 
 	l.skipWhiteSpace()
@@ -117,5 +117,5 @@ func (l *Lexer) NextToken() Token {
 		}
 	}
 
-	return token
+	return &token
 }

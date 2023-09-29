@@ -130,7 +130,7 @@ func executeOne(stringNotation string) (string, int, error) {
 	return explanation, rollResult, nil
 }
 
-func ExecuteRollD20(token tokenizer.Token) (string, error) {
+func ExecuteRollD20(token *tokenizer.Token) (string, error) {
 	var result string
 
 	if token.Type != tokenizer.COMMAND {
