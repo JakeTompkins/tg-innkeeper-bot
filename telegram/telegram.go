@@ -284,18 +284,22 @@ func (t *telegramBot) RegisterWebhook() telegramBotResponse {
 func (t *telegramBot) ProcessText(text string) string {
 	tok := tokenizer.NewLexer(text)
 	token := tok.NextToken()
+
 	var res string
 	var err error
 
 	for token != nil {
 		switch token.Type {
 		case tokenizer.IGNORED_WORD:
+			token = tok.NextToken()
 			continue
 		case tokenizer.IMPORTANT_WORD:
 			fmt.Println("Found an important word!") // NOTE: Not currently in use
 		case tokenizer.COMMAND:
 			res, err = commands.ExecuteRollD20(token) // TODO: Need a better handler for commands once more are implemented
 		}
+
+		token = tok.NextToken()
 	}
 
 	if err != nil {
