@@ -268,6 +268,9 @@ func (t *telegramBot) Send(request telegramBotRequest) telegramBotResponse {
 
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(bodyJson))
 
+	fmt.Println(res)
+	fmt.Println(err)
+
 	if err != nil {
 		return newErrorResponse(err)
 	}
@@ -353,10 +356,11 @@ func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(resText)
 
-	response := t.RespondToMessage(update.Message, resText)
-
-	if response.Error != nil {
-		fmt.Println(response.Error)
+	if len(resText) > 0 {
+		response := t.RespondToMessage(update.Message, resText)
+		if response.Error != nil {
+			fmt.Println(response.Error)
+		}
 	}
 }
 
