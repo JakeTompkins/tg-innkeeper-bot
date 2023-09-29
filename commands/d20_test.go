@@ -8,7 +8,7 @@ import (
 
 func TestRollD20(t *testing.T) {
 	input := tokenizer.Token{Type: tokenizer.COMMAND, Value: "roll 3d4+2 4d20-1 1d100"}
-	output, err := ExecuteRollD20(input)
+	output, err := ExecuteRollD20(&input)
 
 	if err != nil {
 		t.Fatal(err)
