@@ -358,7 +358,11 @@ func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	resText := t.ProcessText(update.Message.Text)
 
-	t.RespondToMessage(update.Message, resText)
+	response := t.RespondToMessage(update.Message, resText)
+
+	if response.Error != nil {
+		fmt.Println(response.Error)
+	}
 }
 
 func (t *telegramBot) Listen() error {
