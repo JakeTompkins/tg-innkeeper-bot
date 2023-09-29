@@ -310,8 +310,10 @@ func (t *telegramBot) ProcessText(text string) string {
 }
 
 func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Message read:")
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
+	fmt.Printf("Body: \n %s", body)
 
 	if err != nil {
 		fmt.Println(err)
