@@ -319,20 +319,13 @@ func (t *telegramBot) RespondToMessage(message *message, text string) telegramBo
 	chatId := message.Chat.Id
 	threadId := message.MessageThreadId
 
-	payload := sendMessagePayload{
+	request := newRequest("sendMessage", sendMessagePayload{
 		ChatId:          chatId,
 		MessageThreadId: threadId,
 		Text:            text,
-	}
+	})
 
-	request := telegramBotRequest{
-		Command: "sendMessage",
-		Payload: payload,
-	}
-
-	response := t.Send(request)
-
-	return response
+	return t.Send(request)
 }
 
 func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
@@ -357,6 +350,8 @@ func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resText := t.ProcessText(update.Message.Text)
+
+	fmt.Println(resText)
 
 	response := t.RespondToMessage(update.Message, resText)
 
