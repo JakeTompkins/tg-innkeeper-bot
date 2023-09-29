@@ -247,6 +247,12 @@ type setWebhookPayload struct {
 	Url string `json:"url,omitempty"`
 }
 
+type sendMessagePayload struct {
+	ChatId          int
+	MessageThreadId int
+	Text            string
+}
+
 func getPortString() string {
 	return fmt.Sprintf(":%s", listenPort)
 }
@@ -309,6 +315,26 @@ func (t *telegramBot) ProcessText(text string) string {
 	return res
 }
 
+func (t *telegramBot) RespondToMessage(message *message, text string) telegramBotResponse {
+	chatId := message.Chat.Id
+	threadId := message.MessageThreadId
+
+	payload := sendMessagePayload{
+		ChatId:          chatId,
+		MessageThreadId: threadId,
+		Text:            text,
+	}
+
+	request := telegramBotRequest{
+		Command: "sendMessage",
+		Payload: payload,
+	}
+
+	response := t.Send(request)
+
+	return response
+}
+
 func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
@@ -332,7 +358,7 @@ func (t *telegramBot) HandleUpdate(w http.ResponseWriter, r *http.Request) {
 
 	resText := t.ProcessText(update.Message.Text)
 
-	fmt.Println(resText)
+	t.RespondToMessage(update.Message, resText)
 }
 
 func (t *telegramBot) Listen() error {
