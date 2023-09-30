@@ -231,16 +231,16 @@ type PollAnswer struct {
 }
 
 type update struct {
-	UpdateId          int                 `json:"update_id,omitempty"`
-	Message           *message            `json:"message,omitempty"`
-	EditedMessage     *message            `json:"edited_message,omitempty"`
-	ChannelPost       *message            `json:"channel_post,omitempty"`
-	EditedChannelPost *message            `json:"edited_channel_post,omitempty"`
-	InlineQuery       *inlineQuery        `json:"inline_query,omitempty"`
-	ChoseInlineResult *chosenInlineResult `json:"chose_inline_result,omitempty"`
-	CallbackQuery     *callbackQuery      `json:"callback_query,omitempty"`
-	Poll              *Poll               `json:"poll,omitempty"`
-	PollAnser         *PollAnswer         `json:"poll_anser,omitempty"`
+	UpdateId           int                 `json:"update_id,omitempty"`
+	Message            *message            `json:"message,omitempty"`
+	EditedMessage      *message            `json:"edited_message,omitempty"`
+	ChannelPost        *message            `json:"channel_post,omitempty"`
+	EditedChannelPost  *message            `json:"edited_channel_post,omitempty"`
+	InlineQuery        *inlineQuery        `json:"inline_query,omitempty"`
+	ChosenInlineResult *chosenInlineResult `json:"chosen_inline_result,omitempty"`
+	CallbackQuery      *callbackQuery      `json:"callback_query,omitempty"`
+	Poll               *Poll               `json:"poll,omitempty"`
+	PollAnser          *PollAnswer         `json:"poll_anser,omitempty"`
 }
 
 type setWebhookPayload struct {
