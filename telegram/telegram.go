@@ -248,9 +248,13 @@ type setWebhookPayload struct {
 }
 
 type sendMessagePayload struct {
-	ChatId int `json:"chat_id,omitempty"`
-	// MessageThreadId int    `json:"message_thread_id,omitempty"`
-	Text string `json:"text,omitempty"`
+	ChatId int    `json:"chat_id,omitempty"`
+	Text   string `json:"text,omitempty"`
+}
+type sendMessageToThreadPayload struct {
+	ChatId          int    `json:"chat_id,omitempty"`
+	MessageThreadId int    `json:"message_thread_id,omitempty"`
+	Text            string `json:"text,omitempty"`
 }
 
 func getPortString() string {
@@ -320,12 +324,10 @@ func (t *telegramBot) ProcessText(text string) string {
 
 func (t *telegramBot) RespondToMessage(message *message, text string) telegramBotResponse {
 	chatId := message.Chat.Id
-	// threadId := message.MessageThreadId
 
 	request := newRequest("sendMessage", sendMessagePayload{
 		ChatId: chatId,
-		// MessageThreadId: threadId,
-		Text: text,
+		Text:   text,
 	})
 
 	return t.Send(request)
